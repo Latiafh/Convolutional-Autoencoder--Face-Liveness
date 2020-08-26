@@ -1,0 +1,67 @@
+import numpy as np
+
+img_width, img_height = 64, 64
+
+batch_size = 24
+
+nb_validation_samples=0
+nb_train_samples=0
+
+nb_epoch=70
+
+#initial_image_dir='images\\docs'
+#train_data_dir ='./new-data/Train-Replay-wildExtra-Scface-casiaW'
+#validation_data_dir = './new-data/Validation/'
+train_data_dir = './new-data/NUAA-C'
+validation_data_dir = './new-data/NUAA-both'
+
+
+#test_data_dir='./test'
+# optimizer ='rmsprop'
+# this is the augmentation configuration we will use for training
+# only rescaling
+
+train_datagen = ImageDataGenerator(rescale=1./255)
+                                    
+
+# this is the augmentation configuration we will use for testing:
+# only rescaling
+
+# this is a generator that will read pictures
+train_generator = train_datagen.flow_from_directory(
+        train_data_dir,  # this is the target directory
+        target_size=(img_width, img_height),  
+        batch_size=batch_size,
+        shuffle=True,
+        color_mode='rgb', 
+        class_mode=None)  
+
+nb_train_samples=train_generator.samples
+
+v_datagen = ImageDataGenerator(rescale=1./255)
+
+# this is a similar generator, for validation data
+validation_generator = v_datagen.flow_from_directory(
+        validation_data_dir,
+        target_size=(img_width, img_height),
+        batch_size=batch_size,
+        shuffle=True,
+        color_mode='rgb', 
+        class_mode=None)
+nb_validation_samples=validation_generator.samples
+
+t_datagen = ImageDataGenerator(rescale=1./255)
+
+# this is a similar generator, for validation data
+
+from tensorflow.keras import backend as k
+#Create the network
+#The first network is the most simple autoencoder. It has three layers : Input - encoded - decoded
+import os
+input_size = 12288
+hidden_size = int(input_size / 2)
+output_size = 12288
+inChannel = 3
+x, y = 64, 64
+input_img = Input(shape = (x, y, inChannel))
+print(input_img)
